@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import database.DBConnection;
+import java.sql.ResultSet;
 /**
  *
  * @author Romel
@@ -39,6 +40,35 @@ public class gestor {
 
         } catch (SQLException e) {
             System.out.println("Error al guardar el registro: " + e.getMessage());
+        }
+    }
+    
+    public static boolean buscarCedula(int cedula){
+        String sql = "SELECT id_empleado FROM empleados WHERE id_empleado = (?)";
+        int resultado = 1;
+        try (Connection con = DBConnection.getConnection();
+            PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+            // Reemplazamos los (?) con los datos reales
+            // El primer número indica la posición del signo de interrogación en el SQL
+            pstmt.setInt(1, cedula);
+            try (ResultSet rs = pstmt.executeQuery()) {
+            
+            // Si encuentra un registro, extraemos el número entero
+            if (rs.next()) {
+                resultado = rs.getInt("id_empleado");
+            }
+        }
+            
+        } catch (SQLException e) {
+            System.out.println("Error al guardar el registro: " + e.getMessage());
+            resultado = 0;
+        }
+        
+        if(resultado == 1){
+            return true;
+        } else {
+            return false;
         }
     }
     
